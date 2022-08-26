@@ -1,0 +1,10 @@
+# Project exclude paths
+/out/
+.idea
+*.iml
+1
+Instruction.png
+JavaRushPlugin.properties
+out.log
+out.log.1
+your.file.name
