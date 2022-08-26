@@ -3,7 +3,7 @@ package com.javarush.task.task19.task1903;
 import java.util.HashMap;
 import java.util.Map;
 
-/*
+/* 
 Адаптация нескольких интерфейсов
 */
 
@@ -17,7 +17,39 @@ public class Solution {
     }
 
     public static void main(String[] args) {
+        IncomeDataAdapter incomeDataAdapter = new IncomeDataAdapter(new IncomeData() {
+            @Override
+            public String getCountryCode() {
+                return "UA";
+            }
 
+            @Override
+            public String getCompany() {
+                return "JavaRush Ltd.";
+            }
+
+            @Override
+            public String getContactFirstName() {
+                return "Ivan";
+            }
+
+            @Override
+            public String getContactLastName() {
+                return "Ivanov";
+            }
+
+            @Override
+            public int getCountryPhoneCode() {
+                return 38;
+            }
+
+            @Override
+            public int getPhoneNumber() {
+                return 501234567;
+            }
+        });
+
+        System.out.println(incomeDataAdapter.getPhoneNumber());
     }
 
     public static class IncomeDataAdapter implements Customer, Contact {

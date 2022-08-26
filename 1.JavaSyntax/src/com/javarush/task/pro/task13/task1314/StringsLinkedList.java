@@ -25,16 +25,19 @@ public class StringsLinkedList {
     }
 
     public String get(int index) {
-        int currentIndex = 0;
-        Node currentElement = first.next;
-        while ((currentElement) != null) {
-            if(currentIndex == index) {
-                return currentElement.value;
+        Node link = first.next;
+        String result = null;
+        for (int i = 0; i < index; i++) {
+            if (link != null) {
+                link = link.next;
+            } else {
+                break;
             }
-            currentElement = currentElement.next;
-            currentIndex++;
         }
-        return null;
+        if (link != null) {
+            result = link.value;
+        }
+        return result;
     }
 
     public static class Node {
