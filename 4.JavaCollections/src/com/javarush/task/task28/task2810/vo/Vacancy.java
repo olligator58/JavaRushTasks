@@ -55,4 +55,33 @@ public class Vacancy {
     public void setUrl(String url) {
         this.url = url;
     }
+
+    @Override
+    public int hashCode() {
+        int result = (title != null) ? title.hashCode() : 0;
+        result = 31 * result + ((salary != null) ? salary.hashCode() : 0);
+        result = 31 * result + ((city != null) ? city.hashCode() : 0);
+        result = 31 * result + ((companyName != null) ? companyName.hashCode() : 0);
+        result = 31 * result + ((siteName != null) ? siteName.hashCode() : 0);
+        result = 31 * result + ((url != null) ? url.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Vacancy v = (Vacancy) o;
+        if ((title != null) ? !title.equals(v.title) : v.title != null) return false;
+        if ((salary != null) ? !salary.equals(v.salary) : v.salary != null) return false;
+        if ((city != null) ? !city.equals(v.city) : v.city != null) return false;
+        if ((companyName != null) ? !companyName.equals(v.companyName) : v.companyName != null) return false;
+        if ((siteName != null) ? !siteName.equals(v.siteName) : v.siteName != null) return false;
+        return (url != null) ? url.equals(v.url) : v.url == null;
+    }
 }
