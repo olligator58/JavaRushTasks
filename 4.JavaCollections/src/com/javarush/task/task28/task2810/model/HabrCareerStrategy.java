@@ -10,8 +10,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HHStrategy implements Strategy {
-        private static final String URL_FORMAT = "https://hh.ru/search/vacancy?text=java+%s&page=%d";
+public class HabrCareerStrategy implements Strategy {
+//    private static final String URL_FORMAT = "https://javarush.ru/testdata/big28data2.html?q=java+%s&page=%d";
+    private static final String URL_FORMAT = "https://career.habr.com/vacancies?q=java+%s&page=%d";
 
     @Override
     public List<Vacancy> getVacancies(String searchString) {
@@ -21,27 +22,26 @@ public class HHStrategy implements Strategy {
         try {
             while (true) {
                 Document document = getDocument(searchString, page);
-//                Elements elements = document.getElementsByAttributeValue("data-qa", "vacancy-serp__vacancy");
-                Elements elements = document.getElementsByAttributeValue("data-qa", "vacancy-serp__vacancy vacancy-serp__vacancy_standard");
+                Elements elements = document.getElementsByClass("job");
 
                 if (elements.isEmpty()) {
                     break;
                 }
                 for (Element element : elements) {
-//                    Elements title = element.getElementsByAttributeValue("data-qa", "vacancy-serp__vacancy-title");
-                    Elements title = element.getElementsByAttributeValue("data-qa", "serp-item__title");
+                    Elements title = element.getElementsByClass("title");
+                    Elements href = title.get(0).getElementsByAttribute("href");
 
-                    Elements salary = element.getElementsByAttributeValue("data-qa", "vacancy-serp__vacancy-compensation");
-                    Elements city = element.getElementsByAttributeValue("data-qa", "vacancy-serp__vacancy-address");
-                    Elements company = element.getElementsByAttributeValue("data-qa", "vacancy-serp__vacancy-employer");
+                    Elements salary = element.getElementsByClass("count");
+                    Elements city = element.getElementsByClass("location");
+                    Elements company = element.getElementsByClass("company_name");
 
                     Vacancy vacancy = new Vacancy();
-                    vacancy.setTitle(title.get(0).text());
+                    vacancy.setTitle(title.get(0).attr("title"));
                     vacancy.setSalary(salary.size() > 0 ? salary.get(0).text() : "");
-                    vacancy.setCity(city.get(0).text());
+                    vacancy.setCity(city.size() > 0 ? city.get(0).text() : "");
                     vacancy.setCompanyName(company.get(0).text());
-                    vacancy.setSiteName("https://hh.ru");
-                    vacancy.setUrl(title.get(0).attr("href"));
+                    vacancy.setSiteName("https://career.habr.com");
+                    vacancy.setUrl("https://career.habr.com" + href.get(0).attr("href"));
                     result.add(vacancy);
                 }
                 page++;
