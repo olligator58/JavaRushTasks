@@ -1,35 +1,44 @@
 package com.javarush.task.task26.task2613;
 
+import com.javarush.task.task26.task2613.exception.InterruptOperationException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ResourceBundle;
 
 public class ConsoleHelper {
     private static BufferedReader bis = new BufferedReader(new InputStreamReader(System.in));
+    private static ResourceBundle res = ResourceBundle.getBundle(CashMachine.RESOURCE_PATH + "common");
 
     public static void writeMessage(String message) {
         System.out.println(message);
     }
 
-    public static String readString() {
+    public static String readString() throws InterruptOperationException {
         try {
-            return bis.readLine();
+            String answer = bis.readLine();
+            if (answer.toLowerCase().equals("exit")) {
+                writeMessage(res.getString("the.end"));
+                throw new InterruptOperationException();
+            }
+            return answer;
         } catch (IOException ignored) {
         }
         return null;
     }
 
-    public static String askCurrencyCode() {
-        writeMessage("Введите код валюты:");
+    public static String askCurrencyCode() throws InterruptOperationException {
+        writeMessage(res.getString("choose.currency.code"));
         String currencyCode;
         while ((currencyCode = readString()).length() != 3) {
-            writeMessage("Код валюты должен иметь 3 символа");
+            writeMessage(res.getString("invalid.data"));
         }
         return currencyCode.toUpperCase();
     }
 
-    public static String[] getValidTwoDigits(String currencyCode) {
-        writeMessage(String.format("Введите номинал и количество банкнот для валюты %s:", currencyCode.toUpperCase()));
+    public static String[] getValidTwoDigits(String currencyCode) throws InterruptOperationException {
+        writeMessage(String.format(res.getString("choose.denomination.and.count.format"), currencyCode.toUpperCase()));
         boolean numbersCorrect = false;
         while (true) {
             String[] numbers = readString().split("\\s");
@@ -48,23 +57,27 @@ public class ConsoleHelper {
             if (numbersCorrect) {
                 return numbers;
             } else {
-                writeMessage("Нужно ввести 2 целых положительных числа, разделенные пробелом");
+                writeMessage(res.getString("invalid.data"));
             }
         }
     }
 
-    public static Operation askOperation() {
+    public static Operation askOperation() throws InterruptOperationException {
         while (true) {
-            writeMessage("Введите код операции:");
-            writeMessage("1. INFO");
-            writeMessage("2. DEPOSIT");
-            writeMessage("3. WITHDRAW");
-            writeMessage("4. EXIT");
+            writeMessage(res.getString("choose.operation"));
+            writeMessage("1. " + res.getString("operation.INFO"));
+            writeMessage("2. " + res.getString("operation.DEPOSIT"));
+            writeMessage("3. " + res.getString("operation.WITHDRAW"));
+            writeMessage("4. " + res.getString("operation.EXIT"));
             String answer = readString();
             try {
                 return Operation.getAllowableOperationByOrdinal(Integer.parseInt(answer));
             } catch (Exception ignored) {
             }
         }
+    }
+
+    public static void printExitMessage() {
+        writeMessage(res.getString("the.end"));
     }
 }
