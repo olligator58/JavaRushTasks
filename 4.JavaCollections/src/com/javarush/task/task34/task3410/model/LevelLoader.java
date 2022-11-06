@@ -17,9 +17,11 @@ public class LevelLoader {
         walls.add(new Wall(210, 230));
         walls.add(new Wall(210, 250));
         Set<Box> boxes = new HashSet<>();
+        boxes.add(new Box(110, 130));
         boxes.add(new Box(110, 230));
         Set<Home> homes = new HashSet<>();
         homes.add(new Home(270, 230));
+        homes.add(new Home(270, 250));
         return new GameObjects(walls, boxes, homes, new Player(110, 250));
     }
 }
