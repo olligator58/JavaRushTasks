@@ -15,6 +15,7 @@ public class MinesweeperGame extends Game {
     private static final String FLAG = "\uD83D\uDEA9";
     private boolean isGameStopped;
     private int countClosedTiles = SIDE * SIDE;
+    private int score;
 
     @Override
     public void initialize() {
@@ -24,7 +25,11 @@ public class MinesweeperGame extends Game {
 
     @Override
     public void onMouseLeftClick(int x, int y) {
-        openTile(x, y);
+        if (!isGameStopped) {
+            openTile(x, y);
+        } else {
+            restart();
+        }
     }
 
     @Override
@@ -40,12 +45,12 @@ public class MinesweeperGame extends Game {
                     countMinesOnField++;
                 }
                 gameField[y][x] = new GameObject(x, y, isMine);
+                setCellValue(x, y, "");
                 setCellColor(x, y, Color.ORANGE);
             }
         }
         countMineNeighbors();
         countFlags = countMinesOnField;
-        isGameStopped = false;
     }
 
     private List<GameObject> getNeighbors(GameObject gameObject) {
@@ -95,6 +100,7 @@ public class MinesweeperGame extends Game {
         if (gameObject.isMine) {
             setCellValueEx(x, y, Color.RED, MINE);
             gameOver();
+            return;
         } else if (gameObject.countMineNeighbors == 0) {
             setCellValue(x, y, "");
             for (GameObject neighbor : getNeighbors(gameObject)) {
@@ -105,6 +111,9 @@ public class MinesweeperGame extends Game {
         } else {
             setCellNumber(x, y, gameObject.countMineNeighbors);
         }
+
+        score += 5;
+        setScore(score);
 
         if (countClosedTiles == countMinesOnField && !gameObject.isMine) {
             win();
@@ -136,5 +145,14 @@ public class MinesweeperGame extends Game {
     private void win() {
         isGameStopped = true;
         showMessageDialog(Color.GOLD, "You won !!!", Color.BLACK, 50);
+    }
+
+    private void restart() {
+        isGameStopped = false;
+        countClosedTiles = SIDE * SIDE;
+        score = 0;
+        countMinesOnField = 0;
+        setScore(score);
+        createGame();
     }
 }
