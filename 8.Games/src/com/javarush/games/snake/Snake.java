@@ -19,7 +19,12 @@ public class Snake {
     }
 
     public void setDirection(Direction direction) {
-        this.direction = direction;
+        if (direction == Direction.LEFT && this.direction != Direction.RIGHT ||
+                direction == Direction.RIGHT && this.direction != Direction.LEFT ||
+                direction == Direction.UP && this.direction != Direction.DOWN ||
+                direction == Direction.DOWN && this.direction != Direction.UP) {
+            this.direction = direction;
+        }
     }
 
     public void draw(Game game) {
@@ -28,5 +33,42 @@ public class Snake {
         for (int i = 1; i < snakeParts.size(); i++) {
             game.setCellValueEx(snakeParts.get(i).x, snakeParts.get(i).y, Color.NONE, BODY_SIGN, snakeColor, 75);
         }
+    }
+
+    public void move(Apple apple) {
+        GameObject newHead = createNewHead();
+        if (newHead.x < 0 || newHead.x >= SnakeGame.WIDTH || newHead.y < 0 || newHead.y >= SnakeGame.HEIGHT) {
+            isAlive = false;
+            return;
+        }
+
+        snakeParts.add(0, newHead);
+        if (newHead.x == apple.x && newHead.y == apple.y) {
+            apple.isAlive = false;
+        } else {
+            removeTail();
+        }
+    }
+
+    public GameObject createNewHead() {
+        int headX = snakeParts.get(0).x;
+        int headY = snakeParts.get(0).y;
+
+        switch (direction) {
+            case LEFT:
+                return new GameObject(headX - 1, headY);
+            case RIGHT:
+                return new GameObject(headX + 1, headY);
+            case UP:
+                return new GameObject(headX, headY - 1);
+            case DOWN:
+                return new GameObject(headX, headY + 1);
+            default:
+                return null;
+        }
+    }
+
+    public void removeTail() {
+        snakeParts.remove(snakeParts.size() - 1);
     }
 }
