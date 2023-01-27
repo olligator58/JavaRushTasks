@@ -3,6 +3,7 @@ package com.javarush.games.spaceinvaders;
 import com.javarush.engine.cell.*;
 import com.javarush.games.spaceinvaders.gameobjects.Bullet;
 import com.javarush.games.spaceinvaders.gameobjects.EnemyFleet;
+import com.javarush.games.spaceinvaders.gameobjects.PlayerShip;
 import com.javarush.games.spaceinvaders.gameobjects.Star;
 
 import java.util.ArrayList;
@@ -16,6 +17,9 @@ public class SpaceInvadersGame extends Game {
     private List<Star> stars;
     private EnemyFleet enemyFleet;
     private List<Bullet> enemyBullets;
+    private PlayerShip playerShip;
+    private boolean isGameStopped;
+    private int animationsCount;
 
     @Override
     public void initialize() {
@@ -39,6 +43,9 @@ public class SpaceInvadersGame extends Game {
         createStars();
         enemyFleet = new EnemyFleet();
         enemyBullets = new ArrayList<>();
+        playerShip = new PlayerShip();
+        isGameStopped = false;
+        animationsCount = 0;
         drawScene();
     }
 
@@ -48,6 +55,7 @@ public class SpaceInvadersGame extends Game {
         for (Bullet bullet : enemyBullets) {
             bullet.draw(this);
         }
+        playerShip.draw(this);
     }
 
     private void drawField() {
@@ -87,6 +95,25 @@ public class SpaceInvadersGame extends Game {
     }
 
     private void check() {
+        playerShip.verifyHit(enemyBullets);
         removeDeadBullets();
+        if (!playerShip.isAlive) {
+            stopGameWithDelay();
+        }
+    }
+
+    private void stopGame(boolean isWin) {
+        isGameStopped = true;
+        stopTurnTimer();
+        Color color = (isWin) ? Color.GREEN : Color.RED;
+        String message = (isWin) ? "You won !!!" : "You lost !!!";
+        showMessageDialog(Color.NONE, message, color, 50);
+    }
+
+    private void stopGameWithDelay() {
+        animationsCount++;
+        if (animationsCount >= 10) {
+            stopGame(playerShip.isAlive);
+        }
     }
 }
