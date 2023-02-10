@@ -46,8 +46,10 @@ public class PlayerShip extends Ship {
         }
 
         isAlive = false;
-        setAnimatedView(ShapeMatrix.KILL_PLAYER_ANIMATION_FIRST, ShapeMatrix.KILL_PLAYER_ANIMATION_SECOND,
-                        ShapeMatrix.KILL_PLAYER_ANIMATION_THIRD, ShapeMatrix.DEAD_PLAYER);
+        setAnimatedView(false, ShapeMatrix.KILL_PLAYER_ANIMATION_FIRST,
+                        ShapeMatrix.KILL_PLAYER_ANIMATION_SECOND,
+                        ShapeMatrix.KILL_PLAYER_ANIMATION_THIRD,
+                        ShapeMatrix.DEAD_PLAYER);
     }
 
     public void move() {
@@ -74,5 +76,9 @@ public class PlayerShip extends Ship {
             return null;
         }
         return new Bullet(x + 2, y - ShapeMatrix.BULLET.length, Direction.UP);
+    }
+
+    public void win() {
+        setStaticView(ShapeMatrix.WIN_PLAYER);
     }
 }
