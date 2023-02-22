@@ -11,6 +11,7 @@ public class RacerGame extends Game {
     private RoadMarking roadMarking;
     private PlayerCar player;
     private RoadManager roadManager;
+    private boolean isGameStopped;
 
     @Override
     public void initialize() {
@@ -24,6 +25,7 @@ public class RacerGame extends Game {
         player = new PlayerCar();
         roadManager = new RoadManager();
         setTurnTimer(40);
+        isGameStopped = false;
         drawScene();
     }
 
@@ -63,6 +65,11 @@ public class RacerGame extends Game {
 
     @Override
     public void onTurn(int step) {
+        if (roadManager.checkCrush(player)) {
+            gameOver();
+            drawScene();
+            return;
+        }
         moveAll();
         roadManager.generateNewRoadObjects(this);
         drawScene();
@@ -77,6 +84,14 @@ public class RacerGame extends Game {
             case RIGHT:
                 player.setDirection(Direction.RIGHT);
                 break;
+            case SPACE:
+                if (isGameStopped) {
+                    createGame();
+                }
+                break;
+            case UP:
+                player.speed = 2;
+                break;
             default:
         }
     }
@@ -87,11 +102,21 @@ public class RacerGame extends Game {
             key == Key.LEFT && player.getDirection() == Direction.LEFT) {
             player.setDirection(Direction.NONE);
         }
+        if (key == Key.UP) {
+            player.speed = 1;
+        }
     }
 
     private void moveAll() {
         roadMarking.move(player.speed);
         player.move();
         roadManager.move(player.speed);
+    }
+
+    private void gameOver() {
+        isGameStopped = true;
+        showMessageDialog(Color.NONE, "GAME OVER", Color.RED, 50);
+        stopTurnTimer();
+        player.stop();
     }
 }
